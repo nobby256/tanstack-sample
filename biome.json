@@ -1,0 +1,73 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+	"vcs": {
+		"enabled": false,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": [
+			"src/**/*.{js,jsx,ts,tsx,json,css}",
+			"!src/**/routeTree.gen.ts"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"linter": {
+		"enabled": true,
+		"domains": {
+			"project": "recommended",
+			"react": "recommended"
+		},
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noPrivateImports": "error",
+				"noUnusedVariables": {
+					"level": "error"
+				}
+			},
+			"nursery": {
+				"noFloatingPromises": "error"
+			},
+			"style": {
+				"noRestrictedImports": {
+					"level": "error",
+					"options": {
+						"patterns": [
+							{
+								"group": ["@/lib/*/internal/*"],
+								"message": "Do not import internal modules directly."
+							}
+						]
+					}
+				}
+			},
+			"suspicious": {
+				"noEmptyInterface": "off"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"semicolons": "asNeeded"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	}
+}
