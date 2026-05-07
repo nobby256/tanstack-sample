@@ -26,34 +26,36 @@ function dec(key: string) {
 }
 
 /**
- * shouldReloadWithCacheIfAvailable
+ * shouldReloadForNavigation
  * ---------------------------------------------------------------------------
  * preferCacheOnce に登録された navigation は
  * loader をスキップする。
  */
-export function shouldReloadWithCacheIfAvailable(
+export function shouldReloadForNavigation(
 	args: ShouldReloadArgsLike,
 ): boolean | undefined {
 	const key = args.location?.href
 
 	if (key && (preferCacheOnce.get(key) ?? 0) > 0) {
-		return false
+		return false // loader をスキップ
 	}
 
 	return true
 }
 
 /**
- * useNavigateWithCacheIfAvailable
+ * useNavigateWithoutDataLoad
  * ---------------------------------------------------------------------------
  * 次の navigation だけ loader をスキップさせる navigate wrapper
  */
-function useNavigateWithCacheIfAvailable() {
+export function useNavigateWithoutDataLoad() {
 	const router = useRouter()
 
 	return async (options: NavigateOptions) => {
-		const next = router.buildLocation(options)
-		const key = next.href
+		const key =
+			"href" in options && typeof options.href === "string"
+				? options.href
+				: router.buildLocation(options).href
 
 		inc(key)
 
@@ -79,11 +81,11 @@ type UIStateKeys<T> = {
  */
 type UIState<T> =
 	UIStateKeys<T> extends never
-		? // biome-ignore lint/complexity/noBannedTypes: UIState の空ケースは {} で表現したい
-			{}
-		: {
-				[K in UIStateKeys<T>]: T[K]
-			}
+	? // biome-ignore lint/complexity/noBannedTypes: UIState の空ケースは {} で表現したい
+	{}
+	: {
+		[K in UIStateKeys<T>]: T[K]
+	}
 
 /**
  * UI state を更新するための patch 型。
@@ -92,10 +94,10 @@ type UIState<T> =
  */
 type UIStatePatch<T> =
 	UIStateKeys<T> extends never
-		? Record<string, never>
-		: {
-				[K in UIStateKeys<T>]?: T[K] | undefined
-			}
+	? Record<string, never>
+	: {
+		[K in UIStateKeys<T>]?: T[K] | undefined
+	}
 
 type RouteSearch<TRoute> = TRoute extends {
 	types: { fullSearchSchema: infer S }
@@ -128,7 +130,7 @@ export function useUIState<
 	},
 >(route: TRoute) {
 	const router = useRouter()
-	const navigate = useNavigateWithCacheIfAvailable()
+	const navigate = useNavigateWithoutDataLoad()
 
 	type Search = RouteSearch<TRoute>
 	type UiState = UIState<Search>

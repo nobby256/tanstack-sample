@@ -21,6 +21,8 @@ export function createAppRouter<TRoute extends AnyRoute>(routeTree: TRoute) {
 		scrollRestoration: true,
 		defaultPreload: false,
 		trailingSlash: "never",
+		defaultStaleReloadMode: "blocking",
+		defaultGcTime: 1000 * 60 * 5, // 5分
 	})
 
 	// navigation 履歴の追跡を開始

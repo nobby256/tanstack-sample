@@ -9,6 +9,6 @@ export { navigationTx } from "./internal/navigationTx"
 export { normalizeSearch } from "./internal/normalizeSearch"
 export { createAppRouter } from "./internal/router"
 export {
-	shouldReloadWithCacheIfAvailable,
+	useNavigateWithoutDataLoad,
 	useUIState,
-} from "./internal/useUIState"
+} from "./internal/useNavigateWithoutDataLoad"

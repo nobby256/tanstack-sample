@@ -1,5 +1,5 @@
 import { isInNavigationRollback } from "./navigationTracker"
-import { shouldReloadWithCacheIfAvailable } from "./useUIState"
+import { shouldReloadForNavigation } from "./useNavigateWithoutDataLoad"
 
 /**
  * noCachePolicy
@@ -9,8 +9,8 @@ import { shouldReloadWithCacheIfAvailable } from "./useUIState"
  * 全ての画面の基本ポリシー。
  */
 export const noCachePolicy = {
+	staleReloadMode: "blocking",
 	staleTime: 0,
-	gcTime: 0,
 	shouldReload: ({
 		cause,
 		location,
@@ -18,17 +18,19 @@ export const noCachePolicy = {
 		cause: "enter" | "stay" | "preload"
 		location: { href?: string }
 	}) => {
+		if (cause === "preload") {
+			return true
+		}
 		// 画面遷移キャンセルが発生し元の画面に戻ってきた流れの場合はloaderは呼び出さない
 		if (cause === "stay" && isInNavigationRollback()) {
 			return false
 		}
 		// 次の navigation だけ loader をスキップさせる要求がある場合は、loader を呼び出さない
-		if (!shouldReloadWithCacheIfAvailable({ location })) {
+		if (!shouldReloadForNavigation({ location })) {
 			return false
 		}
 		return true
 	},
-	staleReloadMode: "blocking",
 } as const
 
 /**
@@ -42,6 +44,7 @@ export const noCachePolicy = {
  *   - Feature flags
  */
 export const staticCachePolicy = {
+	staleReloadMode: "blocking",
 	staleTime: Infinity,
 	gcTime: Infinity,
 	shouldReload: () => false,

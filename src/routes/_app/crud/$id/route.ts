@@ -11,7 +11,9 @@ import { Page } from "./_page/page"
 
 // URL schema
 // `_` prefix は UI state
-const searchSchema = z.object({}).default({})
+const searchSchema = z.object({
+	_returnTo: z.string(),
+}).default({})
 
 export const Route = createFileRoute("/_app/crud/$id")({
 	// Cache Policy
