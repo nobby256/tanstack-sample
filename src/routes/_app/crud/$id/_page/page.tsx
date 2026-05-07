@@ -14,7 +14,9 @@ export function Page() {
 	const router = useRouter()
 	const search = Route.useSearch()
 	const navigationWithoutDataLoad = useNavigateWithoutDataLoad()
+
 	const item = Route.useLoaderData()
+
 	const { register, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			name: item.name,
@@ -36,6 +38,7 @@ export function Page() {
 		// 履歴を使用して遷移する例（loaderの呼び出しあり）
 		router.history.back()
 	})
+
 	const onClickCancel = safeHandler(async () => {
 		// loaderの呼び出しなしで遷移する例
 		await navigationWithoutDataLoad({

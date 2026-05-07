@@ -1,5 +1,3 @@
-import { normalizeRequest } from "@/lib/api/normalizeRequest"
-
 /**
  * QueryKey
  * ----------------------------------------------------------------------------
@@ -192,14 +190,11 @@ export function buildQueryKey(
 		return [entity, scope, name] as const
 	}
 
-	// params canonicalization
-	const normalized = normalizeRequest(params)
-
 	// params が空になった場合
-	if (Object.keys(normalized).length === 0) {
+	if (Object.keys(params).length === 0) {
 		return [entity, scope, name] as const
 	}
 
 	// full key
-	return [entity, scope, name, normalized] as const
+	return [entity, scope, name, params] as const
 }

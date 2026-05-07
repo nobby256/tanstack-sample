@@ -148,6 +148,7 @@ export function useUIState<
 				...current,
 				...patch,
 			},
+			replace: true,
 		})
 	}
 
