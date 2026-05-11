@@ -1,7 +1,7 @@
 import { RouterProvider } from "@tanstack/react-router"
 import ReactDOM from "react-dom/client"
 import { MockProvider } from "@/mocks/MockProvider"
-import { createAppRouter } from "./lib/core/router"
+import { createAppRouter, registerAppExitGuard } from "./lib/core/router"
 
 export { routerContext } from "./routerContext"
 
@@ -11,6 +11,9 @@ import { routeTree } from "./routeTree.gen"
 //   const { worker } = await import('./mocks/browser')
 //   await worker.start()
 // }
+
+// アプリケーションの終了ガードを登録
+registerAppExitGuard()
 
 const router = createAppRouter(routeTree)
 

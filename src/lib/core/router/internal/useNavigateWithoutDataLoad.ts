@@ -1,4 +1,5 @@
-import { type NavigateOptions, useRouter } from "@tanstack/react-router"
+import type { NavigateOptions } from "@tanstack/react-router"
+import { useRouter } from "@tanstack/react-router"
 
 type ShouldReloadArgsLike = {
 	location?: {
@@ -81,11 +82,11 @@ type UIStateKeys<T> = {
  */
 type UIState<T> =
 	UIStateKeys<T> extends never
-	? // biome-ignore lint/complexity/noBannedTypes: UIState の空ケースは {} で表現したい
-	{}
-	: {
-		[K in UIStateKeys<T>]: T[K]
-	}
+		? // biome-ignore lint/complexity/noBannedTypes: UIState の空ケースは {} で表現したい
+			{}
+		: {
+				[K in UIStateKeys<T>]: T[K]
+			}
 
 /**
  * UI state を更新するための patch 型。
@@ -94,10 +95,10 @@ type UIState<T> =
  */
 type UIStatePatch<T> =
 	UIStateKeys<T> extends never
-	? Record<string, never>
-	: {
-		[K in UIStateKeys<T>]?: T[K] | undefined
-	}
+		? Record<string, never>
+		: {
+				[K in UIStateKeys<T>]?: T[K] | undefined
+			}
 
 type RouteSearch<TRoute> = TRoute extends {
 	types: { fullSearchSchema: infer S }
@@ -111,6 +112,11 @@ type RouteSearch<TRoute> = TRoute extends {
 function pickUIState<T extends Record<string, unknown>>(search: T): UIState<T> {
 	const entries = Object.entries(search).filter(([key]) => key.startsWith("_"))
 	return Object.fromEntries(entries) as UIState<T>
+}
+
+type PatchUiStateOptions = {
+	ignoreBlocker?: boolean
+	replace?: boolean
 }
 
 /**
@@ -139,7 +145,10 @@ export function useUIState<
 	const search = route.useSearch()
 	const uiState = pickUIState(search as Record<string, unknown>) as UiState
 
-	async function patchUiState(patch: UIStatePatch<Search>): Promise<void> {
+	async function patchUiState(
+		patch: UIStatePatch<Search>,
+		options: PatchUiStateOptions = {},
+	): Promise<void> {
 		const current = router.state.location.search as Search
 
 		await navigate({
@@ -148,7 +157,8 @@ export function useUIState<
 				...current,
 				...patch,
 			},
-			replace: true,
+			replace: options.replace ?? true,
+			ignoreBlocker: options.ignoreBlocker ?? true,
 		})
 	}
 

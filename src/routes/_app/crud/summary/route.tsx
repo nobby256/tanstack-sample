@@ -1,3 +1,13 @@
+/**
+ * Route Layer: Page
+ * URL: /crud/summary
+ *
+ * Responsibility
+ * - Page loader
+ * - Page level cache policy
+ * - Navigation transaction boundary
+ */
+
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 import {
@@ -6,16 +16,18 @@ import {
 	noCachePolicy,
 	normalizeSearch,
 } from "@/lib/core/router"
+
 import { loadPage } from "./_api/api.load"
 import { Page } from "./_page/page"
 
 // URL schema
 // `_` prefix は UI state
-const searchSchema = z.object({
-	_returnTo: z.string(),
-}).default({})
+const searchSchema = z.strictObject({
+	keyword: z.string().optional(),
+	category: z.string().optional(),
+})
 
-export const Route = createFileRoute("/_app/crud/$id")({
+export const Route = createFileRoute("/_app/crud/summary")({
 	// Cache Policy
 	...noCachePolicy,
 
@@ -30,5 +42,10 @@ export const Route = createFileRoute("/_app/crud/$id")({
 		navigationTx(args, () => loadPage({ ...args.params, ...args.deps })),
 
 	// Page Component
-	component: Page,
+	component: PageComponent,
 })
+
+function PageComponent() {
+	const loaderData = Route.useLoaderData()
+	return <Page loaderData={loaderData} />
+}

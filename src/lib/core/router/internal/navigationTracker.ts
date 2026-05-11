@@ -93,8 +93,8 @@ export function beginRedirect(error: AppError) {
 			"リダイレクトが繰り返されているため、処理を中断します。",
 			{
 				cause: error,
-				fatal: true
-			}
+				fatal: true,
+			},
 		)
 	}
 	state.redirectErrors.push(error)

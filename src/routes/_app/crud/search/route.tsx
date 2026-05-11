@@ -12,11 +12,9 @@ import { Page } from "./_page/page"
 
 // URL schema
 // `_` prefix は UI state
-const searchSchema = z
-	.object({
-		_check: z.boolean().optional(),
-	})
-	.default({})
+const searchSchema = z.strictObject({
+	_check: z.boolean().optional(),
+})
 
 export const Route = createFileRoute("/_app/crud/search")({
 	// Cache Policy
@@ -33,5 +31,10 @@ export const Route = createFileRoute("/_app/crud/search")({
 		navigationTx(args, () => loadPage({ ...args.params, ...args.deps })),
 
 	// Page Component
-	component: Page,
+	component: PageComponent,
 })
+
+function PageComponent() {
+	const loaderData = Route.useLoaderData()
+	return <Page loaderData={loaderData} />
+}

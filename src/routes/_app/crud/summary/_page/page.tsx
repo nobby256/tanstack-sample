@@ -1,15 +1,18 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { Route } from "../route"
+import type { SummaryItem } from "../_api/api.types"
 
-export function Page() {
+type PageProps = {
+	loaderData: SummaryItem[]
+}
+
+export function Page({ loaderData }: PageProps) {
 	const location = useLocation()
-	const items = Route.useLoaderData()
 
 	return (
 		<div>
 			<h2>Results</h2>
 			<ul>
-				{items.map((item) => (
+				{loaderData.map((item) => (
 					<li key={item.id}>
 						<Link
 							to="/crud/$id"

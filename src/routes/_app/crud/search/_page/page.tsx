@@ -1,17 +1,20 @@
-import { useNavigate } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 import { safeHandler } from "@/features/error-handling/safeHandler"
-import { useUIState } from "@/lib/core/router"
+import { useRouteNavigation } from "@/lib/core/router"
 import { Route } from "../route"
+
+type PageProps = {
+	loaderData: undefined
+}
 
 type FormValues = {
 	keyword: string
 	category: string
 }
 
-export function Page() {
-	const navigate = useNavigate()
-	const { uiState, patchUiState } = useUIState(Route)
+export function Page({ loaderData: _loaderData }: PageProps) {
+	const navigation = useRouteNavigation(Route)
+
 	const { register, handleSubmit } = useForm<FormValues>({
 		defaultValues: {
 			keyword: "",
@@ -21,14 +24,14 @@ export function Page() {
 
 	const onChangeCheckbox = safeHandler(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			await patchUiState({
+			await navigation.patchUiState({
 				_check: e.target.checked,
 			})
 		},
 	)
 
 	const submitSearch = safeHandler(async (data: FormValues) => {
-		await navigate({
+		await navigation.navigate({
 			to: "/crud/summary",
 			search: {
 				keyword: data.keyword,
@@ -45,7 +48,7 @@ export function Page() {
 				<input placeholder="category" {...register("category")} />
 				<input
 					type="checkbox"
-					checked={uiState._check ?? false}
+					checked={navigation.uiState._check ?? false}
 					onChange={onChangeCheckbox}
 				/>
 				<button type="submit">Search</button>

@@ -26,7 +26,6 @@ export const handlers = [
 	// }),
 
 	http.get("/api/detail/:id", async ({ params }) => {
-		await delay(2000) // 2秒の遅延をシミュレート
 		//return errorResponse(500, 'INTERNAL SERVER ERROR')
 		const id = String(params.id)
 
@@ -43,14 +42,14 @@ export const handlers = [
 	}),
 
 	http.put("/api/detail/:id", async ({ params, request: _request }) => {
-		await delay(2000) // 2秒の遅延をシミュレート
 		//return errorResponse(500, 'INTERNAL SERVER ERROR')
 		const _id = String(params.id)
 
 		return HttpResponse.json<DetailItem>(undefined, { status: 204 })
 	}),
 
-	http.get("/api/summary", ({ request }) => {
+	http.get("/api/summary", async ({ request }) => {
+		await delay(2000) // 2秒の遅延をシミュレート
 		//return new HttpResponse(null, { status: 500 })
 		const url = new URL(request.url)
 		const keyword = url.searchParams.get("keyword") ?? ""
