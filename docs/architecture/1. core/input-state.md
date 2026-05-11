@@ -16,17 +16,11 @@ Application State
 
 この文書では **User Input の状態モデル**を定義する。
 
-本アーキテクチャではフォーム状態管理に  
-**TanStack Form の利用を想定している。**
-
-ただし本ドキュメントで説明する User Input モデルは  
-**特定のフォームライブラリに依存しない概念モデル**である。
-
 ---
 
 # User Input Model
 
-ユーザー入力は **Draft State（編集中の状態）**として扱う。
+ユーザー入力は **Draft State（編集中の状態）** として扱う。
 
 ```
 Server Data

@@ -1,4 +1,4 @@
-# URL Driven UIState Architecture  
+# UI State
 （URL による UI 状態管理モデル）
 
 ## 概要
@@ -17,8 +17,6 @@ UI State = URL
 - Global Store  
 
 ではなく **URL の一部として保持する。**
-
-このモデルを **URL Driven UIState Architecture** と呼ぶ。
 
 ---
 
@@ -232,8 +230,6 @@ UI State として URL に保存する例
 - フォーム入力値  
 - 機密情報  
 - 大量データ  
-
-フォーム入力値は **Form State Architecture** によって管理する。
 
 ---
 
