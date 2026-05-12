@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { safeHandler } from "@/features/error-handling/safeHandler"
+import { boundary } from "@/lib/core/handler"
 import { useLeaveGuard, useRouteNavigation } from "@/lib/core/router"
 import { updateDetailItem } from "../_api/api.event"
 import type { DetailItem } from "../_api/api.types"
@@ -38,7 +38,7 @@ export function Page({ loaderData }: PageProps) {
 	/*
 	 * 更新ボタンのハンドラ
 	 */
-	const submitUpdate1 = safeHandler(async (formValues: FormValues) => {
+	const submitUpdate1 = boundary(async (formValues: FormValues) => {
 		await updateDetailItem({
 			item: {
 				id: loaderData.id,
@@ -47,13 +47,13 @@ export function Page({ loaderData }: PageProps) {
 				description: formValues.description,
 			},
 		})
-
 		alert("Update successful")
 
 		// 初期値を現在の値に更新することで、dirtyフラグをリセット
 		reset(formValues)
 	})
-	const submitUpdate2 = safeHandler(async (formValues: FormValues) => {
+
+	const submitUpdate2 = boundary(async (formValues: FormValues) => {
 		await updateDetailItem({
 			item: {
 				id: loaderData.id,
@@ -72,21 +72,21 @@ export function Page({ loaderData }: PageProps) {
 	/*
 	 * 戻るボタンのハンドラ
 	 */
-	const onClickReturn1 = safeHandler(async () => {
+	const onClickReturn1 = boundary(async () => {
 		// loaderの呼び出し "なし" で遷移
 		await navigation.navigate({
 			href: navigation.search._returnTo,
 			skipLoader: true,
 		})
 	})
-	const onClickReturn2 = safeHandler(async () => {
+	const onClickReturn2 = boundary(async () => {
 		// loaderの呼び出し "あり" で遷移
 		await navigation.navigate({
 			href: navigation.search._returnTo,
 			skipLoader: false,
 		})
 	})
-	const onClickReturn3 = safeHandler(async () => {
+	const onClickReturn3 = boundary(async () => {
 		// loaderの呼び出し "あり" で遷移
 		await navigation.back()
 	})
@@ -94,14 +94,14 @@ export function Page({ loaderData }: PageProps) {
 	/*
 	 * UIStateの変更ハンドラ
 	 */
-	const onChangeCheckbox1 = safeHandler(
+	const onChangeCheckbox1 = boundary(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
 			await navigation.patchUiState({
 				_check1: e.target.checked,
 			})
 		},
 	)
-	const onChangeCheckbox2 = safeHandler(
+	const onChangeCheckbox2 = boundary(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
 			await navigation.patchUiState(
 				{
@@ -119,7 +119,8 @@ export function Page({ loaderData }: PageProps) {
 			<form>
 				<fieldset>
 					<legend>入力データ</legend>
-					<div>ID: {loaderData.id}</div>
+					<div>id: {loaderData.id}</div>
+					<div>version: {loaderData.version}</div>
 					<div>
 						Name:
 						<input {...register("name")} />
@@ -132,15 +133,17 @@ export function Page({ loaderData }: PageProps) {
 						type="button"
 						onClick={handleSubmit(submitUpdate1)}
 						disabled={!isDirty}
+						style={{ display: "block" }}
 					>
-						更新（更新した内容を信用してformオブジェクトを更新）
+						更新（更新した内容を信用してformオブジェクトを更新、versionは変わらない）
 					</button>
 					<button
 						type="button"
 						onClick={handleSubmit(submitUpdate2)}
 						disabled={!isDirty}
+						style={{ display: "block" }}
 					>
-						更新（サーバーから最新情報を再読み込み）
+						更新（サーバーから最新情報を再読み込み、versionが変わる）
 					</button>
 				</fieldset>
 

@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/network/api"
+import { apiClient } from "@/features/api/apiClient"
 import type { SummaryItem } from "./api.types"
 
 export interface LoadPageParams {

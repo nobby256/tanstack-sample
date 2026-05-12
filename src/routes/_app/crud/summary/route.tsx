@@ -11,9 +11,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 import {
+	dynamicLoaderPolicy,
 	extractQueryState,
 	navigationTx,
-	noCachePolicy,
 	normalizeSearch,
 } from "@/lib/core/router"
 
@@ -28,8 +28,8 @@ const searchSchema = z.strictObject({
 })
 
 export const Route = createFileRoute("/_app/crud/summary")({
-	// Cache Policy
-	...noCachePolicy,
+	// Loader Policy
+	...dynamicLoaderPolicy,
 
 	// validate + canonicalize URL
 	validateSearch: (search) => normalizeSearch(searchSchema.parse(search)),

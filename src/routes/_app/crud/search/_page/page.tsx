@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { safeHandler } from "@/features/error-handling/safeHandler"
+import { boundary } from "@/lib/core/handler"
 import { useRouteNavigation } from "@/lib/core/router"
 import { Route } from "../route"
 
@@ -22,7 +22,7 @@ export function Page({ loaderData: _loaderData }: PageProps) {
 		},
 	})
 
-	const onChangeCheckbox = safeHandler(
+	const onChangeCheckbox = boundary(
 		async (e: React.ChangeEvent<HTMLInputElement>) => {
 			await navigation.patchUiState({
 				_check: e.target.checked,
@@ -30,7 +30,7 @@ export function Page({ loaderData: _loaderData }: PageProps) {
 		},
 	)
 
-	const submitSearch = safeHandler(async (data: FormValues) => {
+	const submitSearch = boundary(async (data: FormValues) => {
 		await navigation.navigate({
 			to: "/crud/summary",
 			search: {

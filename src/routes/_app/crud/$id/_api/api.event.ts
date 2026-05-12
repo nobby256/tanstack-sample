@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/network/api"
+import { apiClient } from "@/features/api/apiClient"
 import type { DetailItem } from "./api.types"
 
 export async function updateDetailItem(args: {

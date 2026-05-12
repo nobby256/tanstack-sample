@@ -2,6 +2,8 @@ import { delay, HttpResponse, http } from "msw"
 import type { DetailItem } from "@/routes/_app/crud/$id/_api/api.types"
 import type { SummaryItem } from "@/routes/_app/crud/summary/_api/api.types"
 
+let versionCounter = 1
+
 export const handlers = [
 	// http.get('/api/profile', () => {
 	//   //return errorResponse(500, 'INTERNAL SERVER ERROR')
@@ -34,6 +36,7 @@ export const handlers = [
 				id,
 				name: `Item ${id}`,
 				description: `This is detail for item ${id}`,
+				version: versionCounter,
 			},
 			{
 				status: 200,
@@ -42,9 +45,12 @@ export const handlers = [
 	}),
 
 	http.put("/api/detail/:id", async ({ params, request: _request }) => {
-		//return errorResponse(500, 'INTERNAL SERVER ERROR')
+		// return HttpResponse.json(
+		// 	{ message: "INTERNAL SERVER ERROR" },
+		// 	{ status: 500 },
+		// )
 		const _id = String(params.id)
-
+		versionCounter++
 		return HttpResponse.json<DetailItem>(undefined, { status: 204 })
 	}),
 

@@ -1,5 +1,5 @@
 import type { AnyRouter } from "@tanstack/react-router"
-import { type AppError, createAppError } from "@/lib/core/error"
+import { type AppError, createAppError, notifyError } from "@/lib/core/error"
 
 /**
  * ナビゲーション状態
@@ -24,18 +24,6 @@ export interface NavigationState {
  * 内部状態
  */
 const state: NavigationState = { redirectErrors: [] }
-
-/**
- * ナビゲーションエラー通知ハンドラ
- *
- * デフォルトでは alert でエラーを通知する。
- * アプリケーションの要件に応じて、適切な実装を登録すること。
- */
-let navigationErrorNotifier = (error: AppError): void => {
-	alert(
-		`エラーが発生したため、画面遷移をキャンセルしました。\n\n${error.message}`,
-	)
-}
 
 let initialized = false
 
@@ -66,7 +54,7 @@ export function setupNavigationTracker(router: AnyRouter): void {
 		const redirectError = getLastRedirectError()
 		endRedirect()
 		if (redirectError) {
-			navigationErrorNotifier(redirectError)
+			notifyError(redirectError)
 		}
 	})
 }
@@ -118,15 +106,4 @@ function getLastRedirectError(): AppError | undefined {
  */
 export function isInNavigationRollback() {
 	return state.redirectErrors.length > 0
-}
-
-/**
- * ナビゲーションエラー通知ハンドラの登録
- *
- * @param handler ナビゲーションエラー通知ハンドラ
- */
-export function registerNavigationErrorNotifier(
-	handler: (error: AppError) => void,
-) {
-	navigationErrorNotifier = handler
 }

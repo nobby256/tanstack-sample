@@ -5,6 +5,7 @@ export {
 	createAppError,
 	isAppError,
 } from "./internal/AppError"
+export { notifyError, registerErrorNotifier } from "./internal/errorNotifier"
 export {
 	getErrorChain,
 	getErrorMessage,

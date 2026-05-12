@@ -1,1 +1,1 @@
-export { eventHandler } from "./internal/eventHandler"
+export { boundary } from "./internal/boundary"

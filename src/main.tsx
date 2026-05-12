@@ -5,6 +5,8 @@ import { createAppRouter, registerAppExitGuard } from "./lib/core/router"
 
 export { routerContext } from "./routerContext"
 
+import { notifyError } from "./features/notify/notify"
+import { registerErrorNotifier } from "./lib/core/error"
 import { routeTree } from "./routeTree.gen"
 
 // if (import.meta.env.DEV) {
@@ -14,8 +16,10 @@ import { routeTree } from "./routeTree.gen"
 
 // アプリケーションの終了ガードを登録
 registerAppExitGuard()
-
+// ルーターを作成
 const router = createAppRouter(routeTree)
+// エラー通知を登録
+registerErrorNotifier(notifyError)
 
 const rootElement = document.getElementById("app")
 if (!rootElement) {
