@@ -1,6 +1,6 @@
 import { delay, HttpResponse, http } from "msw"
-import type { DetailItem } from "@/routes/_app/crud/$id/_api/api.types"
-import type { SummaryItem } from "@/routes/_app/crud/summary/_api/api.types"
+import type { DetailItem } from "@/routes/_app/crud/detail/$id/_page/types"
+import type { SummaryItem } from "@/routes/_app/crud/summary/_page/types"
 
 let versionCounter = 1
 
@@ -27,7 +27,7 @@ export const handlers = [
 	//   })
 	// }),
 
-	http.get("/api/detail/:id", async ({ params }) => {
+	http.get("/api/crud/detail/:id", async ({ params }) => {
 		//return errorResponse(500, 'INTERNAL SERVER ERROR')
 		const id = String(params.id)
 
@@ -44,7 +44,7 @@ export const handlers = [
 		)
 	}),
 
-	http.put("/api/detail/:id", async ({ params, request: _request }) => {
+	http.put("/api/crud/detail/:id", async ({ params, request: _request }) => {
 		// return HttpResponse.json(
 		// 	{ message: "INTERNAL SERVER ERROR" },
 		// 	{ status: 500 },
@@ -54,7 +54,7 @@ export const handlers = [
 		return HttpResponse.json<DetailItem>(undefined, { status: 204 })
 	}),
 
-	http.get("/api/summary", async ({ request }) => {
+	http.get("/api/crud/summary", async ({ request }) => {
 		await delay(2000) // 2秒の遅延をシミュレート
 		//return new HttpResponse(null, { status: 500 })
 		const url = new URL(request.url)

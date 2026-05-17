@@ -1,13 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { z } from "zod"
 import {
 	dynamicLoaderPolicy,
 	extractQueryState,
 	navigationTx,
 	normalizeSearch,
-} from "@/lib/core/router"
-
-import { loadPage } from "./_api/api.load"
+} from "@router-framework"
+import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
 import { Page } from "./_page/page"
 
 // URL schema
@@ -15,6 +13,10 @@ import { Page } from "./_page/page"
 const searchSchema = z.strictObject({
 	_check: z.boolean().optional(),
 })
+
+// ─────────────────────────────────────
+// Route Definition
+// ─────────────────────────────────────
 
 export const Route = createFileRoute("/_app/crud/search")({
 	// Loader Policy
@@ -26,15 +28,22 @@ export const Route = createFileRoute("/_app/crud/search")({
 	// Query state（UI state を除外）
 	loaderDeps: ({ search }) => extractQueryState(search),
 
-	// Router transaction wrapper
+	// Router transaction
 	loader: (args) =>
-		navigationTx(args, () => loadPage({ ...args.params, ...args.deps })),
+		navigationTx(args, async () => {
+			const data = undefined
+			return { data, pageKey: crypto.randomUUID() }
+		}),
 
-	// Page Component
-	component: PageComponent,
+	// Page Adapter
+	component: RouteComponent,
 })
 
-function PageComponent() {
-	const loaderData = Route.useLoaderData()
-	return <Page loaderData={loaderData} />
+// ─────────────────────────────────────
+// Page Adapter
+// ─────────────────────────────────────
+
+function RouteComponent() {
+	const result = Route.useLoaderData()
+	return <Page key={result.pageKey} loaderData={result.data} />
 }

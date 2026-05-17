@@ -4,26 +4,30 @@ import {
 	navigationTx,
 	normalizeSearch,
 } from "@router-framework"
+
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import { apiClient } from "@/features/api/apiClient"
-
 import { Page } from "./_page/page"
-import type { SummaryItem } from "./_page/types"
+import type { DetailItem } from "./_page/types"
 
-// URL schema
-// `_` prefix は UI state
+// ─────────────────────────────────────────────
+// URL Schema
+// `_` prefix = UI state
+// ─────────────────────────────────────────────
+
 const searchSchema = z.strictObject({
-	keyword: z.string().optional(),
-	category: z.string().optional(),
+	_returnTo: z.string(),
+	_check1: z.boolean().optional(),
+	_check2: z.boolean().optional(),
 })
 
 // ─────────────────────────────────────
 // Route Definition
 // ─────────────────────────────────────
 
-export const Route = createFileRoute("/_app/crud/summary")({
+export const Route = createFileRoute("/_app/crud/detail/$id")({
 	// Loader Policy
 	...dynamicLoaderPolicy,
 
@@ -36,10 +40,8 @@ export const Route = createFileRoute("/_app/crud/summary")({
 	// Router transaction
 	loader: (args) =>
 		navigationTx(args, async () => {
-			const data = await apiClient.get<SummaryItem[]>(`/api/crud/summary`, {
-				keyword: args.deps.keyword,
-				category: args.deps.category,
-			})
+			const { id } = args.params
+			const data = await apiClient.get<DetailItem>(`/api/crud/detail/${id}`)
 			return { data, pageKey: crypto.randomUUID() }
 		}),
 
