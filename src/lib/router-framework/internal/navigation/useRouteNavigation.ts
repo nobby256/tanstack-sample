@@ -1,14 +1,11 @@
-// useRouteNavigation.ts
 import {
 	type AnyRoute,
 	type NavigateOptions,
 	useNavigate,
 	useRouter,
 } from "@tanstack/react-router"
-import {
-	useNavigateWithoutDataLoad,
-	useUIState,
-} from "./useNavigateWithoutDataLoad"
+import { useNavigateWithoutDataLoad } from "./useNavigateWithoutDataLoad"
+import { useUIState } from "./useUIState"
 
 type RouteWithSearch<TRoute extends AnyRoute = AnyRoute> = TRoute & {
 	// biome-ignore lint/suspicious/noExplicitAny: TanStack Router 型 workaround

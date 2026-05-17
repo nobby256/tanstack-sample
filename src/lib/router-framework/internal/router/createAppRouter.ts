@@ -1,6 +1,6 @@
 import type { AnyRoute, ParsedLocation } from "@tanstack/react-router"
 import { createRouter } from "@tanstack/react-router"
-import { setupNavigationTracker } from "./navigationTracker"
+import { createAppError, normalizeError } from "../error"
 
 export interface RouterContext {}
 
@@ -34,10 +34,26 @@ export function createAppRouter<TRoute extends AnyRoute>(
 		defaultStaleTime: 0,
 		defaultStaleReloadMode: "blocking",
 		scrollRestoration: options?.scrollRestoration ?? true,
-		defaultGcTime: options?.defaultGcTime ?? 1_800_000, // 30分（tanstack routerのデフォルト値と同じ）
+		defaultGcTime: options?.defaultGcTime ?? 0,
+		defaultNotFoundComponent: defaultNotFoundHandler,
+		defaultErrorComponent: defaultErrorHandler,
 	})
 
-	setupNavigationTracker(router)
-
 	return router
+}
+
+function defaultNotFoundHandler() {
+	const error = createAppError("NOT_FOUND", {
+		statusCode: 404,
+		fatal: true,
+	})
+	return defaultErrorHandler({ error })
+}
+
+function defaultErrorHandler({ error }: { error: unknown }) {
+	const appError = normalizeError(error)
+	const statusCode = appError.statusCode
+	window.location.href = `/error?status=${statusCode}`
+
+	return undefined
 }

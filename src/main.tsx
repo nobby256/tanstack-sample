@@ -1,40 +1,18 @@
-import {
-	createAppRouter,
-	registerAppExitGuard,
-	registerErrorNotifier,
-} from "@router-framework"
+import { initializeAppRuntime } from "@router-framework"
 import { RouterProvider } from "@tanstack/react-router"
 import ReactDOM from "react-dom/client"
-import { MockProvider } from "@/mocks/MockProvider"
-import { notifyError } from "./features/notify/notify"
+import { notifyError } from "./features/notify"
 import { routeTree } from "./routeTree.gen"
 
-// if (import.meta.env.DEV) {
-//   const { worker } = await import('./mocks/browser')
-//   await worker.start()
-// }
+// ─────────────────────────────────────
+// Framework Setting
+// ─────────────────────────────────────
 
-// アプリケーションの終了ガードを登録
-registerAppExitGuard()
-
-// ルーターを作成
-const router = createAppRouter(routeTree)
-
-// エラー通知を登録
-registerErrorNotifier(notifyError)
-
-const rootElement = document.getElementById("app")
-if (!rootElement) {
-	throw new Error("Root element #app not found")
-}
-
-const root = ReactDOM.createRoot(rootElement)
-
-root.render(
-	<MockProvider>
-		<RouterProvider router={router} />
-	</MockProvider>,
-)
+const router = initializeAppRuntime(routeTree, {
+	errorNotifier: notifyError,
+	defaultGcTime: 1_800_000, // 30分（tanstack routerのデフォルト値と同じ）
+	scrollRestoration: true,
+})
 
 declare module "@tanstack/react-router" {
 	interface Register {
@@ -42,9 +20,30 @@ declare module "@tanstack/react-router" {
 	}
 }
 
-// Back‑Forward Cache（bfcache）に対応するため、ページがキャッシュから復元されたときにリロードする
-window.addEventListener("pageshow", (event) => {
-	if (event.persisted) {
-		window.location.reload()
+// ─────────────────────────────────────
+// Bootstrap
+// ─────────────────────────────────────
+
+async function bootstrap() {
+	if (import.meta.env.DEV) {
+		const { worker } = await import("./mocks/browser")
+		await worker.start({
+			onUnhandledRequest(req, print) {
+				if (req.url.startsWith("/api/")) {
+					print.warning()
+				}
+			},
+		})
 	}
+
+	const rootElement = document.getElementById("app")
+	if (!rootElement) {
+		throw new Error("Root element #app not found")
+	}
+	const root = ReactDOM.createRoot(rootElement)
+	root.render(<RouterProvider router={router} />)
+}
+
+void bootstrap().catch((error) => {
+	console.error("Bootstrap failed", error)
 })

@@ -1,5 +1,5 @@
 import type { AnyRouter } from "@tanstack/react-router"
-import { type AppError, createAppError, notifyError } from "@/lib/core/error"
+import { type AppError, createAppError, notifyError } from "../error"
 
 /**
  * ナビゲーション状態
@@ -37,7 +37,7 @@ let initialized = false
  *
  * @param router TanStack Router instance
  */
-export function setupNavigationTracker(router: AnyRouter): void {
+export function initNavigationTracker(router: AnyRouter): void {
 	if (initialized) {
 		return
 	}

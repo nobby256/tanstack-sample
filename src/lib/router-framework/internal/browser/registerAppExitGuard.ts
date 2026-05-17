@@ -1,7 +1,7 @@
 /**
  * アプリ離脱ガードの設定です。
  */
-export interface AppExitGuardOptions {
+interface AppExitGuardOptions {
 	/**
 	 * 離脱確認を有効にするかどうかです。
 	 *
